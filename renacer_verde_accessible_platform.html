@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renacer Verde - Modelo de Negocio Inclusivo y Accesibilidad POUR</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome for Accessible & Clear Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Tailwind Configuration for Accessibility -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        accessible: {
+                            yellow: '#facc15',
+                            darkBg: '#121212',
+                            darkCard: '#1e1e1e',
+                            highContrastYellow: '#ffff00',
+                            highContrastBg: '#000000',
+                            highContrastText: '#ffffff'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Dyslexia Friendly Font Option */
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700&family=Open+Sans:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Lexend', 'Open Sans', system-ui, -apple-system, sans-serif;
+            transition: background-color 0.3s, color 0.3s, font-size 0.2s;
+            line-height: 1.6;
+        }
+
+        /* Visible and Enhanced Keyboard Focus Indicators (POUR: Operable) */
+        *:focus-visible {
+            outline: 4px solid #16a34a !important;
+            outline-offset: 4px !important;
+            border-radius: 4px;
+        }
+
+        /* High Contrast Theme Override */
+        body.high-contrast {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+        }
+
+        body.high-contrast header, 
+        body.high-contrast section,
+        body.high-contrast nav,
+        body.high-contrast footer,
+        body.high-contrast div.card-accessible {
+            background-color: #121212 !important;
+            color: #ffffff !important;
+            border-color: #ffff00 !important;
+        }
+
+        body.high-contrast button, 
+        body.high-contrast a.btn-accessible {
+            background-color: #ffff00 !important;
+            color: #000000 !important;
+            font-weight: 800 !important;
+            border: 2px solid #ffffff !important;
+        }
+
+        body.high-contrast button:hover,
+        body.high-contrast a.btn-accessible:hover {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+        }
+
+        /* Dyslexic Font Toggle Class */
+        body.dyslexia-mode {
+            font-family: 'Open Sans', Arial, sans-serif !important;
+            letter-spacing: 0.08em !important;
+            word-spacing: 0.15em !important;
+            line-height: 1.9 !important;
+        }
+
+        /* Motor Accessibility - Larger Touch Targets */
+        body.large-targets button, 
+        body.large-targets input, 
+        body.large-targets select, 
+        body.large-targets a {
+            min-height: 54px !important;
+            min-width: 54px !important;
+            padding: 1rem 1.5rem !important;
+            margin: 0.4rem 0 !important;
+            font-size: 1.15rem !important;
+        }
+
+        /* Text Resizing Utility Classes */
+        body.text-size-125 { font-size: 1.15rem; }
+        body.text-size-150 { font-size: 1.35rem; }
+        body.text-size-175 { font-size: 1.55rem; }
+
+        /* Reading Ruler Simulation */
+        #reading-ruler {
+            display: none;
+            position: fixed;
+            pointer-events: none;
+            width: 100%;
+            height: 40px;
+            background: rgba(255, 255, 0, 0.25);
+            border-top: 2px solid #ca8a04;
+            border-bottom: 2px solid #ca8a04;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+        }
+
+        body.ruler-active #reading-ruler {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+
+    <!-- Skip to Main Content Link for Keyboard & Screen Reader Users (POUR: Operable) -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-yellow-400 text-black font-bold p-4 z-50 rounded-md shadow-2xl focus:ring-4 focus:ring-black">
+        Saltar al contenido principal (Presiona Enter)
+    </a>
+
+    <!-- ARIA Live Region for System Announcements (POUR: Perceivable / Operable) -->
+    <div id="accessibility-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Reading Guide Overlay -->
+    <div id="reading-ruler" aria-hidden="true"></div>
+
+    <!-- TOP ACCESSIBILITY BAR (POUR Implementation Center) -->
+    <aside class="bg-slate-900 text-white p-3 shadow-md border-b-2 border-brand-600 sticky top-0 z-40" aria-label="Herramientas de Accesibilidad POUR">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm">
+            
+            <div class="flex items-center gap-2 font-bold text-brand-100">
+                <i class="fa-solid font-bold fa-universal-access text-yellow-400 text-lg" aria-hidden="true"></i>
+                <span>Panel Accesibilidad POUR</span>
+            </div>
+
+            <!-- Accessibility Controls Group -->
+            <div class="flex flex-wrap items-center gap-2" role="toolbar" aria-label="Controles de apoyo visual y auditivo">
+                
+                <!-- Contrast Toggle -->
+                <button id="btn-contrast" onclick="toggleHighContrast()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg border border-slate-600 flex items-center gap-1.5 focus:ring-2 focus:ring-yellow-400" aria-pressed="false">
+                    <i class="fa-solid fa-circle-half-stroke text-yellow-400" aria-hidden="true"></i>
+                    <span>Alto Contraste</span>
+                </button>
+
+                <!-- Dyslexia Font Toggle -->
+                <button id="btn-dyslexia" onclick="toggleDyslexiaFont()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg border border-slate-600 flex items-center gap-1.5" aria-pressed="false">
+                    <i class="fa-solid fa-font" aria-hidden="true"></i>
+                    <span>Fuente Dislexia</span>
+                </button>
+
+                <!-- Text Resize Buttons -->
+                <div class="flex items-center bg-slate-800 rounded-lg border border-slate-600 px-1" role="group" aria-label="Tamaño del texto">
+                    <button onclick="changeFontSize('small')" class="p-1.5 hover:text-yellow-400 font-bold" aria-label="Texto tamaño normal">A</button>
+                    <span class="text-slate-500">|</span>
+                    <button onclick="changeFontSize('medium')" class="p-1.5 hover:text-yellow-400 font-bold text-base" aria-label="Texto mediano 125%">A+</button>
+                    <span class="text-slate-500">|</span>
+                    <button onclick="changeFontSize('large')" class="p-1.5 hover:text-yellow-400 font-bold text-lg" aria-label="Texto grande 150%">A++</button>
+                </div>
+
+                <!-- Text-To-Speech Reader -->
+                <button id="btn-tts" onclick="toggleTextToSpeech()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg border border-slate-600 flex items-center gap-1.5" aria-pressed="false">
+                    <i class="fa-solid fa-volume-high text-green-400" aria-hidden="true"></i>
+                    <span id="tts-label">Lector por Voz</span>
+                </button>
+
+                <!-- Plain Language Mode (Cognitive/Autism support) -->
+                <button id="btn-plain-lang" onclick="togglePlainLanguage()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg border border-slate-600 flex items-center gap-1.5" aria-pressed="false">
+                    <i class="fa-solid fa-brain text-blue-400" aria-hidden="true"></i>
+                    <span>Lenguaje Simplificado</span>
+                </button>
+
+                <!-- Motor Support (Large Buttons) -->
+                <button id="btn-motor" onclick="toggleLargeTargets()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg border border-slate-600 flex items-center gap-1.5" aria-pressed="false">
+                    <i class="fa-solid fa-hand-pointer text-purple-400" aria-hidden="true"></i>
+                    <span>Botones Grandes</span>
+                </button>
+
+                <!-- Reading Ruler -->
+                <button id="btn-ruler" onclick="toggleReadingRuler()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg border border-slate-600 flex items-center gap-1.5" aria-pressed="false">
+                    <i class="fa-solid fa-ruler-horizontal text-amber-400" aria-hidden="true"></i>
+                    <span>Guía Lectura</span>
+                </button>
+
+                <!-- Keyboard Help Modal Trigger -->
+                <button onclick="openKeyboardHelp()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg border border-slate-600 flex items-center gap-1.5" aria-label="Ver atajos de teclado">
+                    <i class="fa-solid fa-keyboard text-teal-400" aria-hidden="true"></i>
+                    <span>Atajos</span>
+                </button>
+
+            </div>
+        </div>
+    </aside>
+
+    <!-- HEADER & MAIN NAVIGATION -->
+    <header class="bg-white border-b border-slate-200 shadow-sm transition-colors card-accessible">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <!-- Brand & Logo -->
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 bg-brand-600 text-white rounded-full flex items-center justify-center font-bold text-2xl shadow-md border-2 border-brand-700" aria-hidden="true">
+                    🌱
+                </div>
+                <div>
+                    <a href="#inicio" class="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2 hover:text-brand-700 focus:ring-2 focus:ring-brand-600 rounded">
+                        Renacer Verde
+                    </a>
+                    <p class="text-xs text-slate-600 font-medium">Modelo de Negocio Inclusivo · UVM Equipo 7</p>
+                </div>
+            </div>
+
+            <!-- Navigation Bar -->
+            <nav aria-label="Navegación Principal">
+                <ul class="flex flex-wrap items-center gap-2 sm:gap-4 font-semibold text-slate-700 text-sm sm:text-base">
+                    <li><a href="#modelo-negocio" class="btn-accessible px-3 py-2 rounded-md hover:bg-brand-50 hover:text-brand-700 focus:bg-brand-100">Modelo Inclusivo</a></li>
+                    <li><a href="#catalogo" class="btn-accessible px-3 py-2 rounded-md hover:bg-brand-50 hover:text-brand-700 focus:bg-brand-100">Productos Ecológicos</a></li>
+                    <li><a href="#finanzas" class="btn-accessible px-3 py-2 rounded-md hover:bg-brand-50 hover:text-brand-700 focus:bg-brand-100">Transparencia Financiera</a></li>
+                    <li><a href="#escalabilidad" class="btn-accessible px-3 py-2 rounded-md hover:bg-brand-50 hover:text-brand-700 focus:bg-brand-100">Escalabilidad</a></li>
+                    <li><a href="#registro" class="btn-accessible px-3 py-2 rounded-md hover:bg-brand-50 hover:text-brand-700 focus:bg-brand-100">Unirme al Taller</a></li>
+                    <li><a href="#pour-audit" class="btn-accessible bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-700 shadow-sm focus:ring-2 focus:ring-brand-800">Auditoría POUR</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main id="main-content" class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+        <!-- HERO SECTION: Inclusive Business Presentation -->
+        <section id="inicio" class="bg-gradient-to-br from-brand-50 to-emerald-100 rounded-3xl p-6 sm:p-10 border border-brand-200 shadow-sm transition-colors card-accessible">
+            <div class="grid md:grid-cols-12 gap-8 items-center">
+                
+                <div class="md:col-span-7 space-y-6">
+                    <div class="inline-flex items-center gap-2 bg-brand-600 text-white px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold shadow-sm">
+                        <i class="fa-solid fa-users" aria-hidden="true"></i>
+                        <span>Empoderamiento a través del Reciclaje Inclusivo</span>
+                    </div>
+
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                        Transformando residuos en oportunidades dignas para madres solteras
+                    </h1>
+
+                    <div class="prose prose-slate max-w-none text-base sm:text-lg text-slate-700 space-y-3">
+                        <p class="plain-lang-target" data-original="En México, miles de madres solteras en condiciones de vulnerabilidad (Base de la Pirámide) enfrentan barreras para acceder al empleo formal debido al trabajo de cuidados no remunerado. Renacer Verde integra un esquema productivo flexible para la elaboración de productos sustentables con materiales reciclados.">
+                            En México, las madres solteras de sectores vulnerables enfrentan barreras estructurales para acceder al empleo formal. <strong>Renacer Verde</strong> resuelve esta problemática ofreciendo trabajo digno, capacitaciones adaptadas y horarios totalmente flexibles compatibles con la crianza de sus hijos.
+                        </p>
+                        <!-- Cognitive/Autism Mode Simplified Alternate Text (Hidden by default) -->
+                        <div class="plain-lang-alt hidden bg-yellow-100 text-slate-900 p-4 rounded-xl border-l-4 border-yellow-500 font-medium">
+                            <p class="font-bold text-yellow-900 mb-1">💡 En pocas palabras (Versión Simplificada):</p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Ayudamos a madres solteras a tener un empleo seguro.</li>
+                                <li>Fabrican artículos hermosos usando plástico y cartón reciclado.</li>
+                                <li>Ellas deciden sus horarios para cuidar a sus hijos sin perder ingresos.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Call to Action Buttons -->
+                    <div class="flex flex-wrap gap-4 pt-2">
+                        <a href="#registro" class="btn-accessible bg-brand-700 hover:bg-brand-800 text-white font-bold px-6 py-3.5 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2 focus:ring-4 focus:ring-brand-300">
+                            <i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i>
+                            <span>Inscribirse como Colaboradora</span>
+                        </a>
+                        <a href="#catalogo" class="btn-accessible bg-white hover:bg-slate-100 text-slate-900 font-bold px-6 py-3.5 rounded-xl shadow-sm border border-slate-300 flex items-center gap-2">
+                            <i class="fa-solid fa-store text-brand-600" aria-hidden="true"></i>
+                            <span>Ver Catálogo de Productos</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Visual Card with Graphic Data & Accessibility Badge -->
+                <div class="md:col-span-5 bg-white p-6 rounded-2xl shadow-md border border-slate-200 card-accessible space-y-4">
+                    <div class="flex items-center justify-between border-b pb-3 border-slate-100">
+                        <span class="text-sm font-bold text-slate-500 uppercase tracking-wider">Estadísticas Clave (INEGI / ONU)</span>
+                        <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-1 rounded-md">BoP México</span>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl card-accessible">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-house-chimney-user text-2xl text-brand-600" aria-hidden="true"></i>
+                                <div>
+                                    <p class="font-bold text-slate-900 text-lg">+33%</p>
+                                    <p class="text-xs text-slate-600">Hogares liderados por mujeres jefas de familia</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl card-accessible">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-clock text-2xl text-amber-600" aria-hidden="true"></i>
+                                <div>
+                                    <p class="font-bold text-slate-900 text-lg">60% de su tiempo</p>
+                                    <p class="text-xs text-slate-600">Dedicado a cuidados no remunerados</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl card-accessible">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-briefcase text-2xl text-rose-600" aria-hidden="true"></i>
+                                <div>
+                                    <p class="font-bold text-slate-900 text-lg">> 70%</p>
+                                    <p class="text-xs text-slate-600">Tasa de informalidad laboral en el sector</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-brand-50 border border-brand-200 rounded-xl text-xs text-brand-900 flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved text-brand-700 text-base flex-shrink-0" aria-hidden="true"></i>
+                        <span>Diseño web adaptado bajo principios de accesibilidad WCAG 2.1 y Metodología POUR.</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 2: MODELO DE NEGOCIO INCLUSIVO -->
+        <section id="modelo-negocio" class="space-y-8 scroll-mt-24">
+            <div class="border-l-4 border-brand-600 pl-4">
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Modelo de Negocio Inclusivo: Renacer Verde</h2>
+                <p class="text-slate-600 text-base sm:text-lg">Basado en la participación activa de madres solteras como colaboradoras directas.</p>
+            </div>
+
+            <!-- Pillars Grid -->
+            <div class="grid md:grid-cols-3 gap-6">
+                
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 card-accessible space-y-3">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-700 rounded-xl flex items-center justify-center font-bold text-xl">
+                        <i class="fa-solid fa-hands-holding-circle" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900">Tipo de Modelo</h3>
+                    <p class="text-slate-700 text-sm">
+                        <strong>Basado en EMPLEADOS.</strong> Integración directa de madres en situación de vulnerabilidad como artesanas y productoras con pagos justos, seguridad laboral y flexibilidad.
+                    </p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 card-accessible space-y-3">
+                    <div class="w-12 h-12 bg-emerald-100 text-emerald-700 rounded-xl flex items-center justify-center font-bold text-xl">
+                        <i class="fa-solid fa-recycle" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900">Promesa de Valor</h3>
+                    <p class="text-slate-700 text-sm">
+                        Productos sustentables de alto diseño fabricados con plásticos, PET y materiales reciclados locales, uniendo impacto social con cuidado medioambiental.
+                    </p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 card-accessible space-y-3">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-700 rounded-xl flex items-center justify-center font-bold text-xl">
+                        <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900">Capacitación y Acompañamiento</h3>
+                    <p class="text-slate-700 text-sm">
+                        Talleres continuos de eco-diseño, finanzas personales, desarrollo humano y coordinación vía herramientas digitales accesibles como WhatsApp.
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Demographics & Psychographics Table -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden card-accessible">
+                <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
+                    <h3 class="text-lg font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-address-card text-brand-400" aria-hidden="true"></i>
+                        <span>Perfil del Grupo Objetivo (Madres Jefas de Familia)</span>
+                    </h3>
+                    <span class="text-xs bg-slate-800 text-slate-300 px-3 py-1 rounded-full">Base de la Pirámide (BoP)</span>
+                </div>
+
+                <div class="p-6">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm sm:text-base" aria-label="Tabla del perfil demográfico y psicográfico">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-900 border-b border-slate-300">
+                                    <th class="p-3 font-bold">Característica</th>
+                                    <th class="p-3 font-bold">Descripción / Detalles</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200">
+                                <tr>
+                                    <td class="p-3 font-semibold text-brand-800">Grupo Objetivo</td>
+                                    <td class="p-3">Mujeres jefas de familia / Madres solteras (25 a 45 años).</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold text-brand-800">Ubicación y Contexto</td>
+                                    <td class="p-3">Zonas urbanas y periurbanas de México con altos índices de marginación.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold text-brand-800">Escolaridad y Nivel</td>
+                                    <td class="p-3">Educación básica/media incompleta. Nivel socioeconómico medio-bajo y bajo.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold text-brand-800">Motivaciones Principales</td>
+                                    <td class="p-3">Brindar estabilidad económica, alimentación y educación digna a sus hijos.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold text-brand-800">Valores y Cualidades</td>
+                                    <td class="p-3">Resiliencia, alta adaptabilidad, responsabilidad familiar y sentido ético.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: ECO-PRODUCTS CATALOG -->
+        <section id="catalogo" class="space-y-8 scroll-mt-24">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-l-4 border-brand-600 pl-4">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Catálogo de Productos Sustentables</h2>
+                    <p class="text-slate-600 text-base sm:text-lg">Elaborados 100% a mano con plásticos y residuos reciclados de origen local.</p>
+                </div>
+                
+                <!-- Category Filter -->
+                <div class="flex items-center gap-2">
+                    <label for="filter-category" class="font-semibold text-sm">Filtrar por:</label>
+                    <select id="filter-category" onchange="filterProducts()" class="p-2 border border-slate-300 rounded-lg bg-white text-slate-800 text-sm font-semibold focus:ring-2 focus:ring-brand-600 card-accessible">
+                        <option value="all">Todos los Productos</option>
+                        <option value="hogar">Hogar y Decoración</option>
+                        <option value="accesorios">Accesorios</option>
+                        <option value="oficina">Mobiliario y Oficina</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div id="product-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Product Card 1 -->
+                <article class="product-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all card-accessible" data-category="hogar">
+                    <div class="bg-emerald-50 h-48 flex items-center justify-center p-6 text-center border-b border-slate-100">
+                        <span class="text-6xl" role="img" aria-label="Maceta artesanal reciclada">🪴</span>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-md">Hogar</span>
+                            <span class="text-lg font-extrabold text-brand-700">$150 MXN</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">Maceta Orgánica "Eco-Lumina"</h3>
+                        <p class="text-slate-600 text-sm">
+                            Elaborada con 12 botellas PET prensadas y pigmentos naturales ecológicos.
+                        </p>
+                        <div class="pt-2 flex items-center justify-between gap-2">
+                            <button onclick="readAloud('Maceta Orgánica Eco-Lumina. Precio 150 pesos mexicanos. Fabricada con doce botellas pet recicladas.')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 p-2.5 rounded-xl text-sm font-semibold flex items-center gap-1.5 focus:ring-2 focus:ring-slate-400" title="Escuchar descripción del producto">
+                                <i class="fa-solid fa-volume-low text-brand-600" aria-hidden="true"></i>
+                                <span>Audio</span>
+                            </button>
+                            <button onclick="openOrderModal('Maceta Orgánica Eco-Lumina', 150)" class="btn-accessible bg-brand-700 hover:bg-brand-800 text-white font-bold px-4 py-2.5 rounded-xl text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-cart-plus" aria-hidden="true"></i>
+                                <span>Comprar</span>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Product Card 2 -->
+                <article class="product-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all card-accessible" data-category="accesorios">
+                    <div class="bg-amber-50 h-48 flex items-center justify-center p-6 text-center border-b border-slate-100">
+                        <span class="text-6xl" role="img" aria-label="Bolso artesanal de tela reciclada">👜</span>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-md">Accesorios</span>
+                            <span class="text-lg font-extrabold text-brand-700">$250 MXN</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">Bolso Tejido "Esperanza"</h3>
+                        <p class="text-slate-600 text-sm">
+                            Tejido resistente confeccionado a partir de envolturas plásticas y plásticos reutilizados.
+                        </p>
+                        <div class="pt-2 flex items-center justify-between gap-2">
+                            <button onclick="readAloud('Bolso Tejido Esperanza. Precio 250 pesos mexicanos. Confeccionado con plásticos reutilizados y alta durabilidad.')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 p-2.5 rounded-xl text-sm font-semibold flex items-center gap-1.5 focus:ring-2 focus:ring-slate-400" title="Escuchar descripción">
+                                <i class="fa-solid fa-volume-low text-brand-600" aria-hidden="true"></i>
+                                <span>Audio</span>
+                            </button>
+                            <button onclick="openOrderModal('Bolso Tejido Esperanza', 250)" class="btn-accessible bg-brand-700 hover:bg-brand-800 text-white font-bold px-4 py-2.5 rounded-xl text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-cart-plus" aria-hidden="true"></i>
+                                <span>Comprar</span>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Product Card 3 -->
+                <article class="product-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all card-accessible" data-category="oficina">
+                    <div class="bg-blue-50 h-48 flex items-center justify-center p-6 text-center border-b border-slate-100">
+                        <span class="text-6xl" role="img" aria-label="Organizador de escritorio de plástico reciclado">🗄️</span>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs bg-blue-100 text-blue-800 font-bold px-2.5 py-0.5 rounded-md">Oficina</span>
+                            <span class="text-lg font-extrabold text-brand-700">$180 MXN</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">Organizador "Renacer Desk"</h3>
+                        <p class="text-slate-600 text-sm">
+                            Modulo organizador para oficina o estudio creado a partir de taparroscas molidas.
+                        </p>
+                        <div class="pt-2 flex items-center justify-between gap-2">
+                            <button onclick="readAloud('Organizador Renacer Desk. Precio 180 pesos mexicanos. Hecho con taparroscas de plástico molidas.')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 p-2.5 rounded-xl text-sm font-semibold flex items-center gap-1.5 focus:ring-2 focus:ring-slate-400" title="Escuchar descripción">
+                                <i class="fa-solid fa-volume-low text-brand-600" aria-hidden="true"></i>
+                                <span>Audio</span>
+                            </button>
+                            <button onclick="openOrderModal('Organizador Renacer Desk', 180)" class="btn-accessible bg-brand-700 hover:bg-brand-800 text-white font-bold px-4 py-2.5 rounded-xl text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-cart-plus" aria-hidden="true"></i>
+                                <span>Comprar</span>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- SECTION 4: MODELO DE INGRESOS Y TRANSPARENCIA FINANCIERA -->
+        <section id="finanzas" class="space-y-8 scroll-mt-24">
+            <div class="border-l-4 border-brand-600 pl-4">
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Modelo de Ingresos y Viabilidad Financiera</h2>
+                <p class="text-slate-600 text-base sm:text-lg">Proyección basada en un capital semilla inicial de $10,000 MXN para el primer taller.</p>
+            </div>
+
+            <!-- Financial Table directly from PDF -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden card-accessible">
+                <div class="bg-brand-800 text-white px-6 py-4 flex items-center justify-between">
+                    <h3 class="text-lg font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-calculator" aria-hidden="true"></i>
+                        <span>Estructura de Costos e Ingresos Mensuales (Base 100 Unidades)</span>
+                    </h3>
+                    <span class="text-xs bg-brand-900 text-brand-100 px-3 py-1 rounded-full font-semibold">Proyección Oficial</span>
+                </div>
+
+                <div class="p-6 overflow-x-auto">
+                    <table class="w-full text-left border-collapse" aria-label="Tabla de desglose financiero de Renacer Verde">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-900 border-b border-slate-300">
+                                <th class="p-3 font-bold">Concepto</th>
+                                <th class="p-3 font-bold">Descripción</th>
+                                <th class="p-3 font-bold text-right">Monto (MXN)</th>
+                                <th class="p-3 font-bold">Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 text-sm sm:text-base">
+                            <tr>
+                                <td class="p-3 font-semibold">Inversión Inicial</td>
+                                <td class="p-3">Herramientas, insumos y materiales reciclables</td>
+                                <td class="p-3 text-right font-bold text-slate-900">$10,000</td>
+                                <td class="p-3 text-xs text-slate-600">Capital semilla para producción</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold">Costo Unitario Producción</td>
+                                <td class="p-3">Materiales, mano de obra justa y energía por producto</td>
+                                <td class="p-3 text-right font-bold text-slate-900">$50</td>
+                                <td class="p-3 text-xs text-slate-600">Promedio por unidad</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold">Precio de Venta Unitario</td>
+                                <td class="p-3">Valor comercial del producto sustentable</td>
+                                <td class="p-3 text-right font-bold text-emerald-700">$150</td>
+                                <td class="p-3 text-xs text-slate-600">Precio competitivo y justo</td>
+                            </tr>
+                            <tr class="bg-emerald-50/50">
+                                <td class="p-3 font-bold text-brand-900">Ingresos Brutos Mensuales</td>
+                                <td class="p-3 font-medium">100 unidades producidas y vendidas</td>
+                                <td class="p-3 text-right font-extrabold text-brand-800">$15,000</td>
+                                <td class="p-3 text-xs text-brand-900 font-semibold">Ventas totales estimadas</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold">Costos Operativos Fijos</td>
+                                <td class="p-3">Transporte, mantenimiento, embalaje ecológico</td>
+                                <td class="p-3 text-right font-bold text-rose-700">$3,000</td>
+                                <td class="p-3 text-xs text-slate-600">Gastos mensuales fijos</td>
+                            </tr>
+                            <tr class="bg-yellow-50 font-bold border-t-2 border-slate-400">
+                                <td class="p-3 text-slate-900">Ganancia Neta Mensual</td>
+                                <td class="p-3 text-slate-700">$15,000 - ($5,000 Prod. + $3,000 Operat.)</td>
+                                <td class="p-3 text-right text-brand-800 text-lg">$7,000</td>
+                                <td class="p-3 text-xs text-slate-800">70% rentabilidad s/ inversión inicial</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Interactive ROI Calculator for Donors / Investors -->
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm card-accessible space-y-4">
+                <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-line text-brand-600" aria-hidden="true"></i>
+                    <span>Simulador Interactivo de Impacto Financiero y Social</span>
+                </h3>
+                <p class="text-slate-600 text-sm">Ajusta la cantidad de unidades vendidas al mes para calcular el empleo generado y la utilidad sustentable.</p>
+
+                <div class="grid sm:grid-cols-12 gap-6 items-center pt-2">
+                    <div class="sm:col-span-6 space-y-3">
+                        <label for="slider-units" class="font-bold text-slate-800 block">
+                            Unidades Producidas al Mes: <span id="unit-val" class="text-brand-700 text-xl font-extrabold">100</span>
+                        </label>
+                        <input id="slider-units" type="range" min="20" max="500" step="10" value="100" oninput="updateCalculator()" class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600 focus:ring-4 focus:ring-brand-300">
+                        <div class="flex justify-between text-xs text-slate-500 font-semibold">
+                            <span>20 unids (Taller inicial)</span>
+                            <span>250 unids</span>
+                            <span>500 unids (Expansión)</span>
+                        </div>
+                    </div>
+
+                    <div class="sm:col-span-6 bg-slate-50 p-4 rounded-xl border border-slate-200 grid grid-cols-2 gap-4 text-center card-accessible">
+                        <div>
+                            <p class="text-xs text-slate-500 font-bold uppercase">Ingreso Bruto</p>
+                            <p id="calc-revenue" class="text-xl font-extrabold text-slate-900">$15,000 MXN</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 font-bold uppercase">Ganancia Neta</p>
+                            <p id="calc-profit" class="text-xl font-extrabold text-brand-700">$7,000 MXN</p>
+                        </div>
+                        <div class="col-span-2 border-t pt-2 border-slate-200">
+                            <p class="text-xs text-slate-500 font-bold uppercase">Madres Empleadas Estimadas</p>
+                            <p id="calc-mothers" class="text-lg font-bold text-purple-700">10 a 15 Madres Solteras</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: ESCALABILIDAD PROYECTADA -->
+        <section id="escalabilidad" class="space-y-8 scroll-mt-24">
+            <div class="border-l-4 border-brand-600 pl-4">
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Escalabilidad y Hoja de Ruta a 5 Años</h2>
+                <p class="text-slate-600 text-base sm:text-lg">Crecimiento ordenado desde la comunidad local hasta la presencia nacional.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                
+                <!-- Stage 1 -->
+                <div class="bg-white p-6 rounded-2xl border-2 border-brand-500 shadow-sm relative card-accessible space-y-4">
+                    <div class="bg-brand-600 text-white font-bold text-xs uppercase px-3 py-1 rounded-full inline-block">
+                        Año 1 · Inicio
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900">Piloto Local</h3>
+                    <p class="text-slate-600 text-sm">
+                        Capacitar participantes, validar productos con ventas en redes sociales y ferias comunitarias locales.
+                    </p>
+                    <div class="p-3 bg-brand-50 rounded-xl text-brand-900 font-bold text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-person-breastfeeding text-xl" aria-hidden="true"></i>
+                        <span>10 - 20 Madres Solteras</span>
+                    </div>
+                </div>
+
+                <!-- Stage 2 -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm card-accessible space-y-4">
+                    <div class="bg-blue-600 text-white font-bold text-xs uppercase px-3 py-1 rounded-full inline-block">
+                        Años 2 a 3 · Crecimiento
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900">Alianzas Estratégicas</h3>
+                    <p class="text-slate-600 text-sm">
+                        Convenios con escuelas, empresas B2B y tiendas sustentables para pedidos al mayoreo y mayor variedad de productos.
+                    </p>
+                    <div class="p-3 bg-blue-50 rounded-xl text-blue-900 font-bold text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-people-group text-xl" aria-hidden="true"></i>
+                        <span>30 - 40 Madres Solteras</span>
+                    </div>
+                </div>
+
+                <!-- Stage 3 -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm card-accessible space-y-4">
+                    <div class="bg-purple-600 text-white font-bold text-xs uppercase px-3 py-1 rounded-full inline-block">
+                        Años 4 a 5 · Expansión
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900">Presencia Nacional</h3>
+                    <p class="text-slate-600 text-sm">
+                        Réplica del modelo en distintas regiones del país y lanzamiento de plataforma e-commerce accesible.
+                    </p>
+                    <div class="p-3 bg-purple-50 rounded-xl text-purple-900 font-bold text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-network-wired text-xl" aria-hidden="true"></i>
+                        <span>50+ Madres Solteras</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 6: REGISTRO ACCESIBLE PARA COLABORADORAS -->
+        <section id="registro" class="bg-white p-6 sm:p-10 rounded-3xl border border-slate-200 shadow-sm card-accessible space-y-6 scroll-mt-24">
+            <div class="border-l-4 border-brand-600 pl-4">
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Formulario de Inscripción y Contacto</h2>
+                <p class="text-slate-600 text-sm sm:text-base">Diseñado para ser completado fácilmente desde cualquier dispositivo y con cualquier método de entrada.</p>
+            </div>
+
+            <form id="join-form" onsubmit="handleFormSubmit(event)" class="space-y-6 max-w-2xl" aria-label="Formulario de inscripción a Renacer Verde">
+                
+                <div class="space-y-2">
+                    <label for="form-name" class="block font-bold text-slate-900">
+                        Nombre Completo <span class="text-rose-600" aria-label="campo obligatorio">*</span>
+                    </label>
+                    <p class="text-xs text-slate-500" id="name-help">Escribe tu nombre y apellidos.</p>
+                    <input id="form-name" type="text" required aria-describedby="name-help" placeholder="Ej. María López Pérez" class="w-full p-3.5 border border-slate-300 rounded-xl bg-slate-50 text-slate-900 focus:bg-white focus:ring-2 focus:ring-brand-600">
+                </div>
+
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label for="form-phone" class="block font-bold text-slate-900">
+                            Teléfono o WhatsApp <span class="text-rose-600" aria-label="campo obligatorio">*</span>
+                        </label>
+                        <input id="form-phone" type="tel" required placeholder="10 dígitos (Ej. 5512345678)" class="w-full p-3.5 border border-slate-300 rounded-xl bg-slate-50 text-slate-900 focus:bg-white focus:ring-2 focus:ring-brand-600">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="form-role" class="block font-bold text-slate-900">Quiero participar como:</label>
+                        <select id="form-role" class="w-full p-3.5 border border-slate-300 rounded-xl bg-slate-50 text-slate-900 focus:bg-white focus:ring-2 focus:ring-brand-600">
+                            <option value="madre">Madre Soltera (Colaboradora)</option>
+                            <option value="comprador">Cliente / Comprador Eco</option>
+                            <option value="aliado">Empresa / Aliado Comercial</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="form-message" class="block font-bold text-slate-900">Mensaje o Pregunta (Opcional)</label>
+                    <textarea id="form-message" rows="3" placeholder="Cuéntanos tus horarios disponibles o en qué ciudad te encuentras..." class="w-full p-3.5 border border-slate-300 rounded-xl bg-slate-50 text-slate-900 focus:bg-white focus:ring-2 focus:ring-brand-600"></textarea>
+                </div>
+
+                <button type="submit" class="btn-accessible w-full sm:w-auto bg-brand-700 hover:bg-brand-800 text-white font-bold px-8 py-4 rounded-xl shadow-md text-lg flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                    <span>Enviar Solicitud de Registro</span>
+                </button>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 border-t border-slate-800 py-10 mt-16 transition-colors card-accessible">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <div class="grid md:grid-cols-12 gap-8">
+                
+                <div class="md:col-span-6 space-y-3">
+                    <div class="flex items-center space-x-2 text-white font-bold text-xl">
+                        <span>🌱 Renacer Verde</span>
+                    </div>
+                    <p class="text-sm">
+                        Proyecto de Universidad del Valle de México (UVM). Modelo de Negocio Inclusivo orientado a la sostenibilidad ambiental y la equidad social para madres solteras en México.
+                    </p>
+                    <p class="text-xs text-slate-500">
+                        Fecha: 23/07/26 · Profesora: María Pérez Vera
+                    </p>
+                </div>
+
+                <div class="md:col-span-6 space-y-3">
+                    <h3 class="text-white font-bold text-sm uppercase tracking-wider">Integrantes del Equipo 7</h3>
+                    <ul class="grid grid-cols-2 gap-2 text-sm text-slate-300">
+                        <li>• Avendaño Ramirez Carlos</li>
+                        <li>• Dominguez Sanchez Cristian Omar</li>
+                        <li>• Gordoa Quiroz Paola Michelle</li>
+                        <li>• Ramos Cuellar Antonia Geraldine</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="border-t border-slate-800 pt-6 text-center text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p>© 2026 Renacer Verde. Desarrollado con metodología POUR y WCAG 2.1 AA.</p>
+                <p>Referencias: INEGI, ONU Mujeres, CEPAL y Adobe POUR Article.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL 1: ORDER / BUY PRODUCT MODAL -->
+    <div id="order-modal" class="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-200 card-accessible">
+            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+                <h3 id="modal-title" class="text-xl font-bold text-slate-900">Confirmar Compra Sustentable</h3>
+                <button onclick="closeOrderModal()" class="text-slate-500 hover:text-slate-900 font-bold text-xl p-2" aria-label="Cerrar ventana modal">✕</button>
+            </div>
+            
+            <p class="text-sm text-slate-700">
+                Estás adquiriendo: <strong id="modal-prod-name" class="text-brand-700">Producto</strong> por <strong id="modal-prod-price" class="text-slate-900">$0 MXN</strong>.
+            </p>
+            <p class="text-xs bg-emerald-50 text-emerald-800 p-3 rounded-lg border border-emerald-200">
+                💚 Tu compra apoya directamente con empleo remunerado a madres solteras artesanas de Renacer Verde.
+            </p>
+
+            <form onsubmit="confirmOrder(event)" class="space-y-3">
+                <div>
+                    <label for="buyer-name" class="block text-xs font-bold text-slate-700">Tu Nombre</label>
+                    <input id="buyer-name" type="text" required placeholder="Nombre completo" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm">
+                </div>
+                <div>
+                    <label for="buyer-email" class="block text-xs font-bold text-slate-700">Correo Electrónico</label>
+                    <input id="buyer-email" type="email" required placeholder="correo@ejemplo.com" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm">
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="button" onclick="closeOrderModal()" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2.5 rounded-xl text-sm">Cancelar</button>
+                    <button type="submit" class="w-1/2 bg-brand-700 hover:bg-brand-800 text-white font-bold py-2.5 rounded-xl text-sm">Confirmar Pedido</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: KEYBOARD HELP MODAL -->
+    <div id="keyboard-modal" class="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="kb-modal-title">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-200 card-accessible">
+            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+                <h3 id="kb-modal-title" class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-keyboard text-brand-600" aria-hidden="true"></i>
+                    <span>Atajos de Teclado</span>
+                </h3>
+                <button onclick="closeKeyboardHelp()" class="text-slate-500 hover:text-slate-900 font-bold text-xl p-2" aria-label="Cerrar modal">✕</button>
+            </div>
+            
+            <ul class="space-y-2 text-sm text-slate-700">
+                <li class="flex justify-between p-2 bg-slate-50 rounded"><span class="font-bold">Tab</span> <span>Avanzar de elemento</span></li>
+                <li class="flex justify-between p-2 bg-slate-50 rounded"><span class="font-bold">Shift + Tab</span> <span>Retroceder elemento</span></li>
+                <li class="flex justify-between p-2 bg-slate-50 rounded"><span class="font-bold">Alt + C</span> <span>Alternar Alto Contraste</span></li>
+                <li class="flex justify-between p-2 bg-slate-50 rounded"><span class="font-bold">Alt + D</span> <span>Fuente Dislexia</span></li>
+                <li class="flex justify-between p-2 bg-slate-50 rounded"><span class="font-bold">Alt + L</span> <span>Lector por Voz</span></li>
+                <li class="flex justify-between p-2 bg-slate-50 rounded"><span class="font-bold">Esc</span> <span>Cerrar ventanas modales</span></li>
+            </ul>
+
+            <button onclick="closeKeyboardHelp()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl text-sm">Entendido</button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT ENGINE -->
+    <script>
+        
+        // System ARIA Live Announcer helper
+        function announce(message) {
+            const announcer = document.getElementById('accessibility-announcer');
+            if (announcer) {
+                announcer.textContent = '';
+                setTimeout(() => {
+                    announcer.textContent = message;
+                }, 100);
+            }
+        }
+
+        // 1. HIGH CONTRAST TOGGLE (POUR: Perceivable)
+        let highContrastActive = false;
+        function toggleHighContrast() {
+            highContrastActive = !highContrastActive;
+            document.body.classList.toggle('high-contrast', highContrastActive);
+            const btn = document.getElementById('btn-contrast');
+            btn.setAttribute('aria-pressed', highContrastActive);
+            announce(highContrastActive ? "Modo Alto Contraste Activado" : "Modo Alto Contraste Desactivado");
+        }
+
+        // 2. DYSLEXIA FONT TOGGLE (POUR: Perceivable / Understandable)
+        let dyslexiaFontActive = false;
+        function toggleDyslexiaFont() {
+            dyslexiaFontActive = !dyslexiaFontActive;
+            document.body.classList.toggle('dyslexia-mode', dyslexiaFontActive);
+            const btn = document.getElementById('btn-dyslexia');
+            btn.setAttribute('aria-pressed', dyslexiaFontActive);
+            announce(dyslexiaFontActive ? "Fuente para dislexia activada" : "Fuente normal restaurada");
+        }
+
+        // 3. TEXT RESIZER (POUR: Perceivable)
+        function changeFontSize(size) {
+            document.body.classList.remove('text-size-125', 'text-size-150', 'text-size-175');
+            if (size === 'medium') {
+                document.body.classList.add('text-size-125');
+                announce("Tamaño de texto aumentado a 125 por ciento");
+            } else if (size === 'large') {
+                document.body.classList.add('text-size-150');
+                announce("Tamaño de texto aumentado a 150 por ciento");
+            } else {
+                announce("Tamaño de texto normal restaurado");
+            }
+        }
+
+        // 4. TEXT-TO-SPEECH VOICE READER (POUR: Perceivable)
+        let synth = window.speechSynthesis;
+        let isReading = false;
+        function toggleTextToSpeech() {
+            if (!synth) {
+                alert("Tu navegador no soporta síntesis de voz.");
+                return;
+            }
+            if (synth.speaking) {
+                synth.cancel();
+                isReading = false;
+                document.getElementById('tts-label').textContent = "Lector por Voz";
+                document.getElementById('btn-tts').setAttribute('aria-pressed', "false");
+                announce("Lectura de voz detenida");
+            } else {
+                readAloud("Bienvenido a Renacer Verde. Modelo de negocio inclusivo que transforma residuos en empleo digno para madres solteras en México.");
+                document.getElementById('tts-label').textContent = "Detener Voz";
+                document.getElementById('btn-tts').setAttribute('aria-pressed', "true");
+            }
+        }
+
+        function readAloud(text) {
+            if (!synth) return;
+            synth.cancel(); // Stop any ongoing speech
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-MX';
+            utterance.rate = 0.95; // Slightly slower for better comprehension
+            synth.speak(utterance);
+            announce("Reproduciendo audio descriptivo");
+        }
+
+        // 5. PLAIN LANGUAGE TOGGLE (Cognitive / Autism Support)
+        let plainLangActive = false;
+        function togglePlainLanguage() {
+            plainLangActive = !plainLangActive;
+            const target = document.querySelector('.plain-lang-target');
+            const alt = document.querySelector('.plain-lang-alt');
+            const btn = document.getElementById('btn-plain-lang');
+            
+            if (plainLangActive) {
+                alt.classList.remove('hidden');
+                btn.setAttribute('aria-pressed', 'true');
+                announce("Modo de Lenguaje Simplificado Activado");
+            } else {
+                alt.classList.add('hidden');
+                btn.setAttribute('aria-pressed', 'false');
+                announce("Lenguaje completo restaurado");
+            }
+        }
+
+        // 6. MOTOR ACCESSIBILITY (Large Targets)
+        let largeTargetsActive = false;
+        function toggleLargeTargets() {
+            largeTargetsActive = !largeTargetsActive;
+            document.body.classList.toggle('large-targets', largeTargetsActive);
+            document.getElementById('btn-motor').setAttribute('aria-pressed', largeTargetsActive);
+            announce(largeTargetsActive ? "Modo de Botones Grandes para asistencia motora activado" : "Botones normales restaurados");
+        }
+
+        // 7. READING RULER TOGGLE (Focus Assist for Dyslexia/ADHD)
+        let rulerActive = false;
+        function toggleReadingRuler() {
+            rulerActive = !rulerActive;
+            document.body.classList.toggle('ruler-active', rulerActive);
+            document.getElementById('btn-ruler').setAttribute('aria-pressed', rulerActive);
+            announce(rulerActive ? "Guía de lectura activada. Mueve el ratón para guiarte." : "Guía de lectura desactivada");
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            if (rulerActive) {
+                const ruler = document.getElementById('reading-ruler');
+                ruler.style.top = `${e.clientY - 20}px`;
+            }
+        });
+
+        // 8. PRODUCT FILTER LOGIC
+        function filterProducts() {
+            const category = document.getElementById('filter-category').value;
+            const products = document.querySelectorAll('.product-card');
+            
+            products.forEach(prod => {
+                if (category === 'all' || prod.dataset.category === category) {
+                    prod.style.display = 'block';
+                } else {
+                    prod.style.display = 'none';
+                }
+            });
+            announce(`Filtro aplicado: ${category}`);
+        }
+
+        // 9. FINANCIAL CALCULATOR ENGINE
+        function updateCalculator() {
+            const units = parseInt(document.getElementById('slider-units').value);
+            document.getElementById('unit-val').textContent = units;
+
+            const revenue = units * 150;
+            const prodCost = units * 50;
+            const opCost = 3000;
+            const profit = revenue - (prodCost + opCost);
+            const mothers = Math.ceil(units / 8);
+
+            document.getElementById('calc-revenue').textContent = `$${revenue.toLocaleString()} MXN`;
+            document.getElementById('calc-profit').textContent = `$${profit.toLocaleString()} MXN`;
+            document.getElementById('calc-mothers').textContent = `${mothers} a ${mothers + 2} Madres Solteras`;
+        }
+
+        // 10. MODAL DIALOG CONTROLS
+        function openOrderModal(prodName, price) {
+            document.getElementById('modal-prod-name').textContent = prodName;
+            document.getElementById('modal-prod-price').textContent = `$${price} MXN`;
+            document.getElementById('order-modal').classList.remove('hidden');
+            document.getElementById('buyer-name').focus();
+            announce(`Ventana modal abierta para comprar ${prodName}`);
+        }
+
+        function closeOrderModal() {
+            document.getElementById('order-modal').classList.add('hidden');
+            announce("Ventana de compra cerrada");
+        }
+
+        function confirmOrder(e) {
+            e.preventDefault();
+            const name = document.getElementById('buyer-name').value;
+            closeOrderModal();
+            announce(`¡Gracias ${name}! Tu pedido ha sido registrado correctamente.`);
+            showToast(`¡Gracias ${name}! Tu pedido sustentable ha sido registrado con éxito.`);
+        }
+
+        function openKeyboardHelp() {
+            document.getElementById('keyboard-modal').classList.remove('hidden');
+            announce("Modal de atajos de teclado abierto");
+        }
+
+        function closeKeyboardHelp() {
+            document.getElementById('keyboard-modal').classList.add('hidden');
+        }
+
+        // Custom Accessible Toast Notification
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-5 right-5 bg-slate-900 text-yellow-400 font-bold p-4 rounded-xl shadow-2xl z-50 border-2 border-yellow-400 flex items-center gap-3';
+            toast.setAttribute('role', 'alert');
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-2xl"></i> <span>${msg}</span>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        // 11. FORM SUBMISSION
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('form-name').value;
+            showToast(`Solicitud recibida para ${name}. Nos pondremos en contacto muy pronto.`);
+            e.target.reset();
+        }
+
+        // 12. GLOBAL KEYBOARD SHORTCUTS (POUR: Operable)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeOrderModal();
+                closeKeyboardHelp();
+            }
+            if (e.altKey && e.key.toLowerCase() === 'c') {
+                toggleHighContrast();
+            }
+            if (e.altKey && e.key.toLowerCase() === 'd') {
+                toggleDyslexiaFont();
+            }
+            if (e.altKey && e.key.toLowerCase() === 'l') {
+                toggleTextToSpeech();
+            }
+        });
+
+        // Window Load Initialization
+        window.onload = function() {
+            announce("Página cargada correctamente. Puedes navegar con la tecla Tab o usar el panel de accesibilidad POUR en la parte superior.");
+        };
+    </script>
+</body>
+</html>
