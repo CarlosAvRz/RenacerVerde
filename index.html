@@ -20,6 +20,8 @@
                         brand: {
                             50: '#f0fdf4',
                             100: '#dcfce7',
+                            200: '#bbf7d0',
+                            500: '#22c55e',
                             600: '#16a34a',
                             700: '#15803d',
                             800: '#166534',
@@ -49,11 +51,19 @@
             line-height: 1.6;
         }
 
+        /* OpenDyslexic / Dyslexia friendly font styles */
+        .dyslexia-mode, body.dyslexia-mode {
+            font-family: 'OpenSans', 'Open Dyslexic', Arial, sans-serif !important;
+            letter-spacing: 0.08em !important;
+            word-spacing: 0.15em !important;
+            line-height: 1.9 !important;
+        }
+
         /* Visible and Enhanced Keyboard Focus Indicators (POUR: Operable) */
         *:focus-visible {
-            outline: 4px solid #16a34a !important;
-            outline-offset: 4px !important;
-            border-radius: 4px;
+            outline: 4px solid #facc15 !important;
+            outline-offset: 3px !important;
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.9) !important;
         }
 
         /* High Contrast Theme Override */
@@ -63,7 +73,7 @@
         }
 
         body.high-contrast header, 
-        body.high-contrast section,
+        body.high-contrast section:not(#landing-hero),
         body.high-contrast nav,
         body.high-contrast footer,
         body.high-contrast div.card-accessible {
@@ -86,12 +96,10 @@
             color: #000000 !important;
         }
 
-        /* Dyslexic Font Toggle Class */
-        body.dyslexia-mode {
-            font-family: 'Open Sans', Arial, sans-serif !important;
-            letter-spacing: 0.08em !important;
-            word-spacing: 0.15em !important;
-            line-height: 1.9 !important;
+        /* Touch Target Size Minimum (POUR: Operable) */
+        .btn-accessible {
+            min-height: 48px;
+            min-width: 48px;
         }
 
         /* Motor Accessibility - Larger Touch Targets */
@@ -118,9 +126,9 @@
             pointer-events: none;
             width: 100%;
             height: 40px;
-            background: rgba(255, 255, 0, 0.25);
-            border-top: 2px solid #ca8a04;
-            border-bottom: 2px solid #ca8a04;
+            background: rgba(250, 204, 21, 0.3);
+            border-top: 3px solid #ca8a04;
+            border-bottom: 3px solid #ca8a04;
             z-index: 9999;
             top: 0;
             left: 0;
@@ -144,75 +152,169 @@
     <!-- Reading Guide Overlay -->
     <div id="reading-ruler" aria-hidden="true"></div>
 
-    <!-- TOP ACCESSIBILITY BAR (POUR Implementation Center) -->
-    <aside class="bg-slate-900 text-white p-3 shadow-md border-b-2 border-brand-600 sticky top-0 z-40" aria-label="Herramientas de Accesibilidad POUR">
-        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm">
-            
-            <div class="flex items-center gap-2 font-bold text-brand-100">
-                <i class="fa-solid font-bold fa-universal-access text-yellow-400 text-lg" aria-hidden="true"></i>
-                <span>Panel Accesibilidad POUR</span>
+    <!-- BOTÓN FLOTANTE PARA ABRIR MENÚ LATERAL DE ACCESIBILIDAD -->
+    <button id="btn-toggle-drawer" onclick="toggleAccessibilityDrawer()" class="fixed top-24 right-4 z-50 bg-slate-900 hover:bg-brand-700 text-yellow-400 p-3 sm:p-4 rounded-full shadow-2xl border-2 border-yellow-400 flex items-center justify-center transition-all duration-300 focus:ring-4 focus:ring-yellow-400 group" aria-label="Abrir panel de accesibilidad POUR" aria-expanded="false" aria-controls="accessibility-drawer">
+        <i class="fa-solid fa-universal-access text-2xl sm:text-3xl transition-transform group-hover:scale-110" aria-hidden="true"></i>
+        <span class="sr-only sm:not-sr-only sm:max-w-0 sm:overflow-hidden sm:group-hover:max-w-xs transition-all duration-500 whitespace-nowrap text-xs font-bold text-white ml-0 group-hover:ml-2">Accesibilidad</span>
+    </button>
+
+    <!-- OVERLAY OSCURO DETRÁS DEL DRAWER -->
+    <div id="drawer-overlay" onclick="closeAccessibilityDrawer()" class="fixed inset-0 bg-black/60 z-50 hidden transition-opacity backdrop-blur-sm" aria-hidden="true"></div>
+
+    <!-- MENÚ LATERAL DE ACCESIBILIDAD (DRAWER OFF-CANVAS) -->
+    <aside id="accessibility-drawer" class="fixed top-0 right-0 w-80 sm:w-96 h-full bg-slate-900 text-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out border-l-4 border-brand-500 flex flex-col" aria-label="Panel de Herramientas de Accesibilidad POUR" aria-hidden="true">
+        
+        <!-- Drawer Header -->
+        <div class="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950">
+            <div class="flex items-center gap-3 font-bold text-yellow-400 text-lg">
+                <i class="fa-solid fa-universal-access text-2xl" aria-hidden="true"></i>
+                <span>Accesibilidad POUR</span>
+            </div>
+            <button onclick="closeAccessibilityDrawer()" class="text-slate-400 hover:text-white text-2xl font-bold p-2 rounded-lg hover:bg-slate-800 focus:ring-2 focus:ring-yellow-400" aria-label="Cerrar panel de accesibilidad">
+                ✕
+            </button>
+        </div>
+
+        <!-- Drawer Body Controls List -->
+        <div class="p-6 overflow-y-auto flex-1 space-y-6">
+            <p class="text-xs text-slate-400">Personaliza la visualización e interacción según tus necesidades de accesibilidad.</p>
+
+            <!-- Contrast Options -->
+            <div class="space-y-2">
+                <label class="block text-xs font-bold text-yellow-400 uppercase tracking-wider">Visualización y Contraste</label>
+                <button id="btn-contrast" onclick="toggleHighContrast()" class="w-full bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl border border-slate-700 flex items-center justify-between font-semibold text-sm focus:ring-2 focus:ring-yellow-400" aria-pressed="false">
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-circle-half-stroke text-yellow-400" aria-hidden="true"></i>
+                        <span>Alto Contraste</span>
+                    </span>
+                    <span class="text-xs bg-slate-900 px-2 py-1 rounded text-slate-400">Alt + C</span>
+                </button>
             </div>
 
-            <!-- Accessibility Controls Group -->
-            <div class="flex flex-wrap items-center gap-2" role="toolbar" aria-label="Controles de apoyo visual y auditivo">
+            <!-- Typography & Text Sizes -->
+            <div class="space-y-2">
+                <label class="block text-xs font-bold text-yellow-400 uppercase tracking-wider">Ajuste de Lectura y Fuente</label>
                 
-                <!-- Contrast Toggle -->
-                <button id="btn-contrast" onclick="toggleHighContrast()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg border border-slate-600 flex items-center gap-1.5 focus:ring-2 focus:ring-yellow-400" aria-pressed="false">
-                    <i class="fa-solid fa-circle-half-stroke text-yellow-400" aria-hidden="true"></i>
-                    <span>Alto Contraste</span>
+                <button id="btn-dyslexia" onclick="toggleDyslexiaFont()" class="w-full bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl border border-slate-700 flex items-center justify-between font-semibold text-sm focus:ring-2 focus:ring-yellow-400" aria-pressed="false">
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-font text-blue-400" aria-hidden="true"></i>
+                        <span>Tipografía Dislexia</span>
+                    </span>
+                    <span class="text-xs bg-slate-900 px-2 py-1 rounded text-slate-400">Alt + D</span>
                 </button>
 
-                <!-- Dyslexia Font Toggle -->
-                <button id="btn-dyslexia" onclick="toggleDyslexiaFont()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg border border-slate-600 flex items-center gap-1.5" aria-pressed="false">
-                    <i class="fa-solid fa-font" aria-hidden="true"></i>
-                    <span>Fuente Dislexia</span>
-                </button>
-
-                <!-- Text Resize Buttons -->
-                <div class="flex items-center bg-slate-800 rounded-lg border border-slate-600 px-1" role="group" aria-label="Tamaño del texto">
-                    <button onclick="changeFontSize('small')" class="p-1.5 hover:text-yellow-400 font-bold" aria-label="Texto tamaño normal">A</button>
-                    <span class="text-slate-500">|</span>
-                    <button onclick="changeFontSize('medium')" class="p-1.5 hover:text-yellow-400 font-bold text-base" aria-label="Texto mediano 125%">A+</button>
-                    <span class="text-slate-500">|</span>
-                    <button onclick="changeFontSize('large')" class="p-1.5 hover:text-yellow-400 font-bold text-lg" aria-label="Texto grande 150%">A++</button>
+                <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 space-y-2">
+                    <span class="text-xs font-bold text-slate-300 block">Tamaño del Texto:</span>
+                    <div class="grid grid-cols-3 gap-2" role="group" aria-label="Tamaño del texto">
+                        <button onclick="changeFontSize('small')" class="bg-slate-900 hover:bg-brand-600 text-white py-2 rounded font-bold text-xs border border-slate-700 focus:ring-2 focus:ring-yellow-400" aria-label="Texto normal 100%">100%</button>
+                        <button onclick="changeFontSize('medium')" class="bg-slate-900 hover:bg-brand-600 text-white py-2 rounded font-bold text-sm border border-slate-700 focus:ring-2 focus:ring-yellow-400" aria-label="Texto mediano 125%">125%</button>
+                        <button onclick="changeFontSize('large')" class="bg-slate-900 hover:bg-brand-600 text-white py-2 rounded font-bold text-base border border-slate-700 focus:ring-2 focus:ring-yellow-400" aria-label="Texto grande 150%">150%</button>
+                    </div>
                 </div>
-
-                <!-- Text-To-Speech Reader -->
-                <button id="btn-tts" onclick="toggleTextToSpeech()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg border border-slate-600 flex items-center gap-1.5" aria-pressed="false">
-                    <i class="fa-solid fa-volume-high text-green-400" aria-hidden="true"></i>
-                    <span id="tts-label">Lector por Voz</span>
-                </button>
-
-                <!-- Plain Language Mode (Cognitive/Autism support) -->
-                <button id="btn-plain-lang" onclick="togglePlainLanguage()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg border border-slate-600 flex items-center gap-1.5" aria-pressed="false">
-                    <i class="fa-solid fa-brain text-blue-400" aria-hidden="true"></i>
-                    <span>Lenguaje Simplificado</span>
-                </button>
-
-                <!-- Motor Support (Large Buttons) -->
-                <button id="btn-motor" onclick="toggleLargeTargets()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg border border-slate-600 flex items-center gap-1.5" aria-pressed="false">
-                    <i class="fa-solid fa-hand-pointer text-purple-400" aria-hidden="true"></i>
-                    <span>Botones Grandes</span>
-                </button>
-
-                <!-- Reading Ruler -->
-                <button id="btn-ruler" onclick="toggleReadingRuler()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg border border-slate-600 flex items-center gap-1.5" aria-pressed="false">
-                    <i class="fa-solid fa-ruler-horizontal text-amber-400" aria-hidden="true"></i>
-                    <span>Guía Lectura</span>
-                </button>
-
-                <!-- Keyboard Help Modal Trigger -->
-                <button onclick="openKeyboardHelp()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg border border-slate-600 flex items-center gap-1.5" aria-label="Ver atajos de teclado">
-                    <i class="fa-solid fa-keyboard text-teal-400" aria-hidden="true"></i>
-                    <span>Atajos</span>
-                </button>
-
             </div>
+
+            <!-- Audio & Cognitive Features -->
+            <div class="space-y-2">
+                <label class="block text-xs font-bold text-yellow-400 uppercase tracking-wider">Apoyo Auditivo y Cognitivo</label>
+                
+                <button id="btn-tts" onclick="toggleTextToSpeech()" class="w-full bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl border border-slate-700 flex items-center justify-between font-semibold text-sm focus:ring-2 focus:ring-yellow-400" aria-pressed="false">
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-volume-high text-emerald-400" aria-hidden="true"></i>
+                        <span id="tts-label">Lector por Voz</span>
+                    </span>
+                    <span class="text-xs bg-slate-900 px-2 py-1 rounded text-slate-400">Alt + L</span>
+                </button>
+
+                <button id="btn-plain-lang" onclick="togglePlainLanguage()" class="w-full bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl border border-slate-700 flex items-center justify-between font-semibold text-sm focus:ring-2 focus:ring-yellow-400" aria-pressed="false">
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-brain text-purple-400" aria-hidden="true"></i>
+                        <span>Lenguaje Simplificado</span>
+                    </span>
+                </button>
+
+                <button id="btn-ruler" onclick="toggleReadingRuler()" class="w-full bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl border border-slate-700 flex items-center justify-between font-semibold text-sm focus:ring-2 focus:ring-yellow-400" aria-pressed="false">
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-ruler-horizontal text-amber-400" aria-hidden="true"></i>
+                        <span>Guía de Lectura</span>
+                    </span>
+                </button>
+            </div>
+
+            <!-- Motor & Nav Extras -->
+            <div class="space-y-2">
+                <label class="block text-xs font-bold text-yellow-400 uppercase tracking-wider">Asistencia Motora y Teclado</label>
+                
+                <button id="btn-motor" onclick="toggleLargeTargets()" class="w-full bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl border border-slate-700 flex items-center justify-between font-semibold text-sm focus:ring-2 focus:ring-yellow-400" aria-pressed="false">
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-hand-pointer text-rose-400" aria-hidden="true"></i>
+                        <span>Botones Grandes</span>
+                    </span>
+                </button>
+
+                <button onclick="openKeyboardHelp()" class="w-full bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl border border-slate-700 flex items-center justify-between font-semibold text-sm focus:ring-2 focus:ring-yellow-400">
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-keyboard text-teal-400" aria-hidden="true"></i>
+                        <span>Atajos de Teclado</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Drawer Footer -->
+        <div class="p-4 bg-slate-950 border-t border-slate-800 text-center text-xs text-slate-400">
+            Metodología POUR · WCAG 2.1 AAA
         </div>
     </aside>
 
-    <!-- HEADER & MAIN NAVIGATION -->
-    <header class="bg-white border-b border-slate-200 shadow-sm transition-colors card-accessible">
+    <!-- SECCIÓN LANDING HERO DE HEROSECTION COMO PORTADA PRINCIPAL -->
+    <section id="landing-hero" class="relative w-full min-h-screen flex items-center justify-center bg-slate-900 text-white overflow-hidden" aria-label="Portada de Inicio - Renacer Verde">
+        <!-- Background Image with Accessibility Fallback & Dark Gradient Overlay for AAA Contrast -->
+        <div class="absolute inset-0 z-0">
+            <img 
+                src="Gemini_Generated_Image_hc2uznhc2uznhc2u.png" 
+                alt="Madre soltera sonriente llevando a su hijo en la espalda, representando la fortaleza y esperanza de las colaboradoras de Renacer Verde" 
+                class="w-full h-full object-cover object-center scale-105 transition-transform duration-1000"
+                onerror="this.src='https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=1920&q=80'"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-slate-900/40"></div>
+        </div>
+
+        <!-- Hero Content Overlay -->
+        <div class="relative z-10 max-w-5xl mx-auto px-6 py-12 text-center space-y-6 flex flex-col items-center">
+            <div class="inline-flex items-center gap-2 bg-brand-600/90 text-white px-4 py-2 rounded-full text-sm font-semibold backdrop-blur-md border border-brand-400/30 shadow-lg">
+                <i class="fa-solid fa-seedling text-yellow-300" aria-hidden="true"></i>
+                <span>Proyecto de Impacto Social y Ecológico · UVM Equipo 7</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white drop-shadow-md max-w-4xl leading-tight">
+                Renacer Verde
+            </h1>
+
+            <p class="text-lg sm:text-2xl text-slate-100 max-w-3xl font-light leading-relaxed drop-shadow-sm">
+                Empoderando a madres solteras a través del reciclaje inclusivo, la flexibilidad laboral y el trabajo digno.
+            </p>
+
+            <div class="pt-4 flex flex-wrap justify-center gap-4">
+                <button onclick="toggleAccessibilityDrawer()" class="btn-accessible bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-full shadow-xl transition-all duration-300 flex items-center gap-3 text-lg border border-brand-400 focus:ring-4 focus:ring-yellow-400">
+                    <i class="fa-solid fa-universal-access" aria-hidden="true"></i>
+                    <span>Abrir Herramientas de Accesibilidad</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Action Button: Down Arrow to Scroll Down to Content (Con el enlace corregido a #inicio) -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 text-center">
+            <a href="#inicio" aria-label="Desplazarse hacia abajo para leer el contenido de la página" class="group flex flex-col items-center gap-2 text-white/90 hover:text-yellow-400 transition-colors focus:outline-none focus:ring-4 focus:ring-yellow-400 rounded-full p-2">
+                <span class="text-xs font-semibold tracking-wider uppercase bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm group-hover:bg-brand-600/80 transition-all">Ver más</span>
+                <div class="w-12 h-12 bg-white/20 group-hover:bg-brand-600 border border-white/40 group-hover:border-brand-400 rounded-full flex items-center justify-center backdrop-blur-md shadow-lg transition-all animate-bounce">
+                    <i class="fa-solid fa-chevron-down text-xl" aria-hidden="true"></i>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- HEADER & MAIN NAVIGATION (Fija arriba z-30) -->
+    <header class="bg-white border-b border-slate-200 shadow-sm transition-colors card-accessible sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
             
             <!-- Brand & Logo -->
@@ -221,7 +323,7 @@
                     🌱
                 </div>
                 <div>
-                    <a href="#inicio" class="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2 hover:text-brand-700 focus:ring-2 focus:ring-brand-600 rounded">
+                    <a href="#landing-hero" class="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2 hover:text-brand-700 focus:ring-2 focus:ring-brand-600 rounded">
                         Renacer Verde
                     </a>
                     <p class="text-xs text-slate-600 font-medium">Modelo de Negocio Inclusivo · UVM Equipo 7</p>
@@ -231,12 +333,12 @@
             <!-- Navigation Bar -->
             <nav aria-label="Navegación Principal">
                 <ul class="flex flex-wrap items-center gap-2 sm:gap-4 font-semibold text-slate-700 text-sm sm:text-base">
+                    <li><a href="#inicio" class="btn-accessible px-3 py-2 rounded-md hover:bg-brand-50 hover:text-brand-700 focus:bg-brand-100">Inicio</a></li>
                     <li><a href="#modelo-negocio" class="btn-accessible px-3 py-2 rounded-md hover:bg-brand-50 hover:text-brand-700 focus:bg-brand-100">Modelo Inclusivo</a></li>
                     <li><a href="#catalogo" class="btn-accessible px-3 py-2 rounded-md hover:bg-brand-50 hover:text-brand-700 focus:bg-brand-100">Productos Ecológicos</a></li>
                     <li><a href="#finanzas" class="btn-accessible px-3 py-2 rounded-md hover:bg-brand-50 hover:text-brand-700 focus:bg-brand-100">Transparencia Financiera</a></li>
                     <li><a href="#escalabilidad" class="btn-accessible px-3 py-2 rounded-md hover:bg-brand-50 hover:text-brand-700 focus:bg-brand-100">Escalabilidad</a></li>
                     <li><a href="#registro" class="btn-accessible px-3 py-2 rounded-md hover:bg-brand-50 hover:text-brand-700 focus:bg-brand-100">Unirme al Taller</a></li>
-                    <li><a href="#pour-audit" class="btn-accessible bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-700 shadow-sm focus:ring-2 focus:ring-brand-800">Auditoría POUR</a></li>
                 </ul>
             </nav>
         </div>
@@ -245,8 +347,8 @@
     <!-- MAIN CONTENT AREA -->
     <main id="main-content" class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
 
-        <!-- HERO SECTION: Inclusive Business Presentation -->
-        <section id="inicio" class="bg-gradient-to-br from-brand-50 to-emerald-100 rounded-3xl p-6 sm:p-10 border border-brand-200 shadow-sm transition-colors card-accessible">
+        <!-- INTRODUCING HERO SECTION (Con scroll-mt-28 y sm:scroll-mt-24 para compensar el header sticky) -->
+        <section id="inicio" class="bg-gradient-to-br from-brand-50 to-emerald-100 rounded-3xl p-6 sm:p-10 border border-brand-200 shadow-sm transition-colors card-accessible scroll-mt-28 sm:scroll-mt-24">
             <div class="grid md:grid-cols-12 gap-8 items-center">
                 
                 <div class="md:col-span-7 space-y-6">
@@ -255,9 +357,9 @@
                         <span>Empoderamiento a través del Reciclaje Inclusivo</span>
                     </div>
 
-                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
                         Transformando residuos en oportunidades dignas para madres solteras
-                    </h1>
+                    </h2>
 
                     <div class="prose prose-slate max-w-none text-base sm:text-lg text-slate-700 space-y-3">
                         <p class="plain-lang-target" data-original="En México, miles de madres solteras en condiciones de vulnerabilidad (Base de la Pirámide) enfrentan barreras para acceder al empleo formal debido al trabajo de cuidados no remunerado. Renacer Verde integra un esquema productivo flexible para la elaboración de productos sustentables con materiales reciclados.">
@@ -335,8 +437,8 @@
             </div>
         </section>
 
-        <!-- SECTION 2: MODELO DE NEGOCIO INCLUSIVO -->
-        <section id="modelo-negocio" class="space-y-8 scroll-mt-24">
+        <!-- SECTION 1: MODELO DE NEGOCIO INCLUSIVO -->
+        <section id="modelo-negocio" class="space-y-8 scroll-mt-28 sm:scroll-mt-24">
             <div class="border-l-4 border-brand-600 pl-4">
                 <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Modelo de Negocio Inclusivo: Renacer Verde</h2>
                 <p class="text-slate-600 text-base sm:text-lg">Basado en la participación activa de madres solteras como colaboradoras directas.</p>
@@ -424,8 +526,8 @@
             </div>
         </section>
 
-        <!-- SECTION 3: ECO-PRODUCTS CATALOG -->
-        <section id="catalogo" class="space-y-8 scroll-mt-24">
+        <!-- SECTION 2: ECO-PRODUCTS CATALOG -->
+        <section id="catalogo" class="space-y-8 scroll-mt-28 sm:scroll-mt-24">
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-l-4 border-brand-600 pl-4">
                 <div>
                     <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Catálogo de Productos Sustentables</h2>
@@ -531,14 +633,14 @@
             </div>
         </section>
 
-        <!-- SECTION 4: MODELO DE INGRESOS Y TRANSPARENCIA FINANCIERA -->
-        <section id="finanzas" class="space-y-8 scroll-mt-24">
+        <!-- SECTION 3: MODELO DE INGRESOS Y TRANSPARENCIA FINANCIERA -->
+        <section id="finanzas" class="space-y-8 scroll-mt-28 sm:scroll-mt-24">
             <div class="border-l-4 border-brand-600 pl-4">
                 <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Modelo de Ingresos y Viabilidad Financiera</h2>
                 <p class="text-slate-600 text-base sm:text-lg">Proyección basada en un capital semilla inicial de $10,000 MXN para el primer taller.</p>
             </div>
 
-            <!-- Financial Table directly from PDF -->
+            <!-- Financial Table -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden card-accessible">
                 <div class="bg-brand-800 text-white px-6 py-4 flex items-center justify-between">
                     <h3 class="text-lg font-bold flex items-center gap-2">
@@ -600,7 +702,7 @@
                 </div>
             </div>
 
-            <!-- Interactive ROI Calculator for Donors / Investors -->
+            <!-- Interactive ROI Calculator -->
             <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm card-accessible space-y-4">
                 <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
                     <i class="fa-solid fa-chart-line text-brand-600" aria-hidden="true"></i>
@@ -639,8 +741,8 @@
             </div>
         </section>
 
-        <!-- SECTION 5: ESCALABILIDAD PROYECTADA -->
-        <section id="escalabilidad" class="space-y-8 scroll-mt-24">
+        <!-- SECTION 4: ESCALABILIDAD PROYECTADA -->
+        <section id="escalabilidad" class="space-y-8 scroll-mt-28 sm:scroll-mt-24">
             <div class="border-l-4 border-brand-600 pl-4">
                 <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Escalabilidad y Hoja de Ruta a 5 Años</h2>
                 <p class="text-slate-600 text-base sm:text-lg">Crecimiento ordenado desde la comunidad local hasta la presencia nacional.</p>
@@ -696,8 +798,8 @@
             </div>
         </section>
 
-        <!-- SECTION 6: REGISTRO ACCESIBLE PARA COLABORADORAS -->
-        <section id="registro" class="bg-white p-6 sm:p-10 rounded-3xl border border-slate-200 shadow-sm card-accessible space-y-6 scroll-mt-24">
+        <!-- SECTION 5: REGISTRO ACCESIBLE PARA COLABORADORAS -->
+        <section id="registro" class="bg-white p-6 sm:p-10 rounded-3xl border border-slate-200 shadow-sm card-accessible space-y-6 scroll-mt-28 sm:scroll-mt-24">
             <div class="border-l-4 border-brand-600 pl-4">
                 <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Formulario de Inscripción y Contacto</h2>
                 <p class="text-slate-600 text-sm sm:text-base">Diseñado para ser completado fácilmente desde cualquier dispositivo y con cualquier método de entrada.</p>
@@ -758,7 +860,7 @@
                         Proyecto de Universidad del Valle de México (UVM). Modelo de Negocio Inclusivo orientado a la sostenibilidad ambiental y la equidad social para madres solteras en México.
                     </p>
                     <p class="text-xs text-slate-500">
-                        Fecha: 23/07/26 · Profesora: María Pérez Vera
+                        Fecha: 2026 · Profesora: María Pérez Vera
                     </p>
                 </div>
 
@@ -775,8 +877,11 @@
             </div>
 
             <div class="border-t border-slate-800 pt-6 text-center text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <p>© 2026 Renacer Verde. Desarrollado con metodología POUR y WCAG 2.1 AA.</p>
-                <p>Referencias: INEGI, ONU Mujeres, CEPAL y Adobe POUR Article.</p>
+                <p>© 2026 Renacer Verde. Desarrollado con metodología POUR y WCAG 2.1 AAA.</p>
+                <a href="#landing-hero" class="text-yellow-400 hover:underline flex items-center gap-1 focus:ring-2 focus:ring-yellow-400 p-1 rounded">
+                    <span>Volver arriba</span>
+                    <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+                </a>
             </div>
         </div>
     </footer>
@@ -839,7 +944,6 @@
 
     <!-- JAVASCRIPT ENGINE -->
     <script>
-        
         // System ARIA Live Announcer helper
         function announce(message) {
             const announcer = document.getElementById('accessibility-announcer');
@@ -849,6 +953,38 @@
                     announcer.textContent = message;
                 }, 100);
             }
+        }
+
+        // DRAWER LATERAL ACCESSIBILITY TOGGLE
+        let isDrawerOpen = false;
+        function toggleAccessibilityDrawer() {
+            isDrawerOpen = !isDrawerOpen;
+            const drawer = document.getElementById('accessibility-drawer');
+            const overlay = document.getElementById('drawer-overlay');
+            const btn = document.getElementById('btn-toggle-drawer');
+
+            if (isDrawerOpen) {
+                drawer.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+                drawer.setAttribute('aria-hidden', 'false');
+                btn.setAttribute('aria-expanded', 'true');
+                announce("Panel lateral de accesibilidad abierto");
+            } else {
+                closeAccessibilityDrawer();
+            }
+        }
+
+        function closeAccessibilityDrawer() {
+            isDrawerOpen = false;
+            const drawer = document.getElementById('accessibility-drawer');
+            const overlay = document.getElementById('drawer-overlay');
+            const btn = document.getElementById('btn-toggle-drawer');
+
+            drawer.classList.add('translate-x-full');
+            overlay.classList.add('hidden');
+            drawer.setAttribute('aria-hidden', 'true');
+            btn.setAttribute('aria-expanded', 'false');
+            announce("Panel de accesibilidad cerrado");
         }
 
         // 1. HIGH CONTRAST TOGGLE (POUR: Perceivable)
@@ -887,7 +1023,6 @@
 
         // 4. TEXT-TO-SPEECH VOICE READER (POUR: Perceivable)
         let synth = window.speechSynthesis;
-        let isReading = false;
         function toggleTextToSpeech() {
             if (!synth) {
                 alert("Tu navegador no soporta síntesis de voz.");
@@ -895,7 +1030,6 @@
             }
             if (synth.speaking) {
                 synth.cancel();
-                isReading = false;
                 document.getElementById('tts-label').textContent = "Lector por Voz";
                 document.getElementById('btn-tts').setAttribute('aria-pressed', "false");
                 announce("Lectura de voz detenida");
@@ -908,15 +1042,15 @@
 
         function readAloud(text) {
             if (!synth) return;
-            synth.cancel(); // Stop any ongoing speech
+            synth.cancel();
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'es-MX';
-            utterance.rate = 0.95; // Slightly slower for better comprehension
+            utterance.rate = 0.95;
             synth.speak(utterance);
             announce("Reproduciendo audio descriptivo");
         }
 
-        // 5. PLAIN LANGUAGE TOGGLE (Cognitive / Autism Support)
+        // 5. PLAIN LANGUAGE TOGGLE
         let plainLangActive = false;
         function togglePlainLanguage() {
             plainLangActive = !plainLangActive;
@@ -925,11 +1059,11 @@
             const btn = document.getElementById('btn-plain-lang');
             
             if (plainLangActive) {
-                alt.classList.remove('hidden');
+                if(alt) alt.classList.remove('hidden');
                 btn.setAttribute('aria-pressed', 'true');
                 announce("Modo de Lenguaje Simplificado Activado");
             } else {
-                alt.classList.add('hidden');
+                if(alt) alt.classList.add('hidden');
                 btn.setAttribute('aria-pressed', 'false');
                 announce("Lenguaje completo restaurado");
             }
@@ -944,7 +1078,7 @@
             announce(largeTargetsActive ? "Modo de Botones Grandes para asistencia motora activado" : "Botones normales restaurados");
         }
 
-        // 7. READING RULER TOGGLE (Focus Assist for Dyslexia/ADHD)
+        // 7. READING RULER TOGGLE
         let rulerActive = false;
         function toggleReadingRuler() {
             rulerActive = !rulerActive;
@@ -1045,6 +1179,7 @@
             if (e.key === 'Escape') {
                 closeOrderModal();
                 closeKeyboardHelp();
+                closeAccessibilityDrawer();
             }
             if (e.altKey && e.key.toLowerCase() === 'c') {
                 toggleHighContrast();
@@ -1059,7 +1194,7 @@
 
         // Window Load Initialization
         window.onload = function() {
-            announce("Página cargada correctamente. Puedes navegar con la tecla Tab o usar el panel de accesibilidad POUR en la parte superior.");
+            announce("Página cargada correctamente. Puedes usar el botón lateral flotante para abrir el panel de accesibilidad.");
         };
     </script>
 </body>
